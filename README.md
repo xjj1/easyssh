@@ -2,6 +2,7 @@
 
 wrapper for easy use of ssh :
 
+```go
 
 import (
 	"fmt"
@@ -22,3 +23,5 @@ func main() {
 
 	fmt.Println(res)
 }
+
+```
