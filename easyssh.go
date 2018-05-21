@@ -18,7 +18,7 @@ type easySSH struct {
 }
 
 func NewSSH(a *Device) (*easySSH, error) {
-	arr_ip := fmt.Sprintf("%s:22", a.Name)
+	deiviceIP := fmt.Sprintf("%s:22", a.Name)
 	config := &ssh.ClientConfig{
 		User: a.Username,
 		Auth: []ssh.AuthMethod{
@@ -26,7 +26,7 @@ func NewSSH(a *Device) (*easySSH, error) {
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
-	client, err := ssh.Dial("tcp", arr_ip, config)
+	client, err := ssh.Dial("tcp", deiviceIP, config)
 	if err != nil {
 		return nil, err
 	}
