@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	c, err := NewSSH(&Device{"1.2.3.4", "user", "pass"})
+	c, err := NewSSH("1.2.3.4", "user", "pass")
 	if err != nil {  // always check errors
 		panic(err)
 	}
