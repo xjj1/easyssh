@@ -10,11 +10,11 @@ import (
 // EasySSH type alias for ssh.Client
 type EasySSH struct {
 	*ssh.Client
+	err error
 }
 
 // NewSSH creates new ssh connection
 func NewSSH(Name, Username, Password string) (*EasySSH, error) {
-	deiviceIP := fmt.Sprintf("%s:22", Name)
 	config := &ssh.ClientConfig{
 		User: Username,
 		Auth: []ssh.AuthMethod{
@@ -22,46 +22,35 @@ func NewSSH(Name, Username, Password string) (*EasySSH, error) {
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
-	client, err := ssh.Dial("tcp", deiviceIP, config)
+	client, err := ssh.Dial("tcp", Name+":22", config)
 	if err != nil {
 		return nil, err
 	}
-	return &EasySSH{client}, nil
+	return &EasySSH{client, nil}, nil
 }
 
-// ExecCmd creates new session, executes one command and returns the result as string and error
-func (c *EasySSH) ExecCmd(cmd string) (string, error) {
+// ExecCmd creates new session, executes one command and returns the result as string and sets error in c
+func (c *EasySSH) ExecCmd(cmd string) string {
+	if c.err != nil {
+		return ""
+	}
 	var session *ssh.Session
 	var b bytes.Buffer
 	session, err := c.NewSession()
 	if err != nil {
-		fmt.Println("Failed to create session: " + err.Error())
-		return "", err
+		c.err = fmt.Errorf("Error creating new session %v", err)
+		return ""
 	}
 	defer session.Close()
 	session.Stdout = &b
 	if err = session.Run(cmd); err != nil {
-		return "", err
-	}
-	return b.String(), nil
-}
-
-// ExecCmdErr creates new session, executes one command and returns the result as string. 
-// Return the errors in *err. Fail if error is set. 
-func (c *EasySSH) ExecCmdErr(cmd string, err *error) string {
-	if *err != nil {
-		return ""
-	}
-	var session *ssh.Session
-	var b bytes.Buffer
-	session, *err = c.NewSession()
-	if err != nil {
-		return ""
-	}
-	defer session.Close()
-	session.Stdout = &b
-	if (*err) = session.Run(cmd); err != nil {
+		c.err = fmt.Errorf("Error executing %s : %v", cmd, err)
 		return ""
 	}
 	return b.String()
+}
+
+// GetError returns the error
+func (c *EasySSH) GetError() error {
+	return c.err
 }
