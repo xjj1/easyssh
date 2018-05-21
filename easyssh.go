@@ -29,7 +29,7 @@ func NewSSH(Name, Username, Password string) (*EasySSH, error) {
 	return &EasySSH{client}, nil
 }
 
-// ExecCmd creates new session, executes one command and returns the result as string
+// ExecCmd creates new session, executes one command and returns the result as string and error
 func (c *EasySSH) ExecCmd(cmd string) (string, error) {
 	var session *ssh.Session
 	var b bytes.Buffer
@@ -56,7 +56,6 @@ func (c *EasySSH) ExecCmdErr(cmd string, err *error) string {
 	var b bytes.Buffer
 	session, *err = c.NewSession()
 	if err != nil {
-		fmt.Println("Failed to create session: " + (*err).Error())
 		return ""
 	}
 	defer session.Close()
@@ -65,5 +64,4 @@ func (c *EasySSH) ExecCmdErr(cmd string, err *error) string {
 		return ""
 	}
 	return b.String()
-
 }
