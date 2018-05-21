@@ -12,15 +12,16 @@ import (
 
 func main() {
 	c, err := NewSSH("1.2.3.4", "user", "pass")
-	if err != nil {  // always check errors
+	if err != nil {  
 		panic(err)
 	}
 
 	res, err := c.ExecCmd("ls -al")
+	
 	if err != nil {
 		panic(err)
 	}
-
+	
 	fmt.Println(res)
 }
 
