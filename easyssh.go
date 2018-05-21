@@ -7,7 +7,7 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-// EasySSH type alias for ssh.ClientEasySSH
+// EasySSH type alias for ssh.Client
 type EasySSH struct {
 	*ssh.Client
 }
