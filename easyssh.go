@@ -1,4 +1,4 @@
-package easySSH
+package easyssh
 
 import (
 	"bytes"
@@ -7,22 +7,18 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-type Device struct {
-	Name     string
-	Username string
-	Password string
-}
-
-type easySSH struct {
+// EasySSH type alias for ssh.ClientEasySSH
+type EasySSH struct {
 	*ssh.Client
 }
 
-func NewSSH(a *Device) (*easySSH, error) {
-	deiviceIP := fmt.Sprintf("%s:22", a.Name)
+// NewSSH creates new ssh connection
+func NewSSH(Name, Username, Password string) (*EasySSH, error) {
+	deiviceIP := fmt.Sprintf("%s:22", Name)
 	config := &ssh.ClientConfig{
-		User: a.Username,
+		User: Username,
 		Auth: []ssh.AuthMethod{
-			ssh.Password(a.Password),
+			ssh.Password(Password),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
@@ -30,10 +26,11 @@ func NewSSH(a *Device) (*easySSH, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &easySSH{client}, nil
+	return &EasySSH{client}, nil
 }
 
-func (c *easySSH) ExecCmd(cmd string) (string, error) {
+// ExecCmd creates new session, executes one command and returns the result as string
+func (c *EasySSH) ExecCmd(cmd string) (string, error) {
 	var session *ssh.Session
 	var b bytes.Buffer
 	session, err := c.NewSession()
@@ -45,12 +42,13 @@ func (c *easySSH) ExecCmd(cmd string) (string, error) {
 	session.Stdout = &b
 	if err = session.Run(cmd); err != nil {
 		return "", err
-	} else {
-		return b.String(), nil
 	}
+	return b.String(), nil
 }
 
-func (c *easySSH) ExecCmdErr(cmd string, err *error) string {
+// ExecCmdErr creates new session, executes one command and returns the result as string. Return immediately if err ! nil.
+// Use to execute safely multiple commands, while having only one error check at the end.
+func (c *EasySSH) ExecCmdErr(cmd string, err *error) string {
 	if *err != nil {
 		return ""
 	}
@@ -65,7 +63,7 @@ func (c *easySSH) ExecCmdErr(cmd string, err *error) string {
 	session.Stdout = &b
 	if (*err) = session.Run(cmd); err != nil {
 		return ""
-	} else {
-		return b.String()
 	}
+	return b.String()
+
 }
