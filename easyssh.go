@@ -46,8 +46,8 @@ func (c *EasySSH) ExecCmd(cmd string) (string, error) {
 	return b.String(), nil
 }
 
-// ExecCmdErr creates new session, executes one command and returns the result as string. Return immediately if err ! nil.
-// Use to execute safely multiple commands, while having only one error check at the end.
+// ExecCmdErr creates new session, executes one command and returns the result as string. 
+// Return the errors in *err. Fail if error is set. 
 func (c *EasySSH) ExecCmdErr(cmd string, err *error) string {
 	if *err != nil {
 		return ""
