@@ -7,14 +7,14 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-// EasySSH type alias for ssh.Client
-type EasySSH struct {
+// easySSH contains ssh.Client and error
+type easySSH struct {
 	*ssh.Client
 	err error
 }
 
 // NewSSH creates new ssh connection
-func NewSSH(Name, Username, Password string) (*EasySSH, error) {
+func NewSSH(Name, Username, Password string) (*easySSH, error) {
 	config := &ssh.ClientConfig{
 		User: Username,
 		Auth: []ssh.AuthMethod{
@@ -26,11 +26,11 @@ func NewSSH(Name, Username, Password string) (*EasySSH, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &EasySSH{client, nil}, nil
+	return &easySSH{client, nil}, nil
 }
 
 // ExecCmd creates new session, executes one command and returns the result as string and sets error in c
-func (c *EasySSH) ExecCmd(cmd string) string {
+func (c *easySSH) ExecCmd(cmd string) string {
 	if c.err != nil {
 		return ""
 	}
@@ -51,6 +51,6 @@ func (c *EasySSH) ExecCmd(cmd string) string {
 }
 
 // GetError returns the error
-func (c *EasySSH) GetError() error {
+func (c *easySSH) GetError() error {
 	return c.err
 }
