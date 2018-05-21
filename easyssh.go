@@ -1,4 +1,4 @@
-package easyssh
+package EasySSH
 
 import (
 	"bytes"
@@ -7,14 +7,14 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-// easySSH contains ssh.Client and error
-type easySSH struct {
-	*ssh.Client
+// EasySSH contains ssh.Client and error
+type EasySSH struct {
+	cl  *ssh.Client
 	err error
 }
 
 // NewSSH creates new ssh connection
-func NewSSH(Name, Username, Password string) (*easySSH, error) {
+func NewSSH(Name, Username, Password string) (*EasySSH, error) {
 	config := &ssh.ClientConfig{
 		User: Username,
 		Auth: []ssh.AuthMethod{
@@ -26,17 +26,17 @@ func NewSSH(Name, Username, Password string) (*easySSH, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &easySSH{client, nil}, nil
+	return &EasySSH{client, nil}, nil
 }
 
 // ExecCmd creates new session, executes one command and returns the result as string and sets error in c
-func (c *easySSH) ExecCmd(cmd string) string {
+func (c *EasySSH) ExecCmd(cmd string) string {
 	if c.err != nil {
 		return ""
 	}
 	var session *ssh.Session
 	var b bytes.Buffer
-	session, err := c.NewSession()
+	session, err := c.cl.NewSession()
 	if err != nil {
 		c.err = fmt.Errorf("Error creating new session %v", err)
 		return ""
@@ -51,6 +51,11 @@ func (c *easySSH) ExecCmd(cmd string) string {
 }
 
 // GetError returns the error
-func (c *easySSH) GetError() error {
+func (c *EasySSH) GetError() error {
 	return c.err
+}
+
+// Close closes the connetion
+func (c *EasySSH) Close() {
+	c.cl.Close()
 }
