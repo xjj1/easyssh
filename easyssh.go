@@ -1,7 +1,7 @@
-package easyssh
+package EasySSH
 
 import (
-	"bytes"
+	//	"bytes"
 	"fmt"
 
 	"golang.org/x/crypto/ssh"
@@ -35,19 +35,21 @@ func (c *EasySSH) ExecCmd(cmd string) string {
 		return ""
 	}
 	var session *ssh.Session
-	var b bytes.Buffer
+	///var b bytes.Buffer
 	session, err := c.cl.NewSession()
 	if err != nil {
 		c.err = fmt.Errorf("Error creating new session %v", err)
 		return ""
 	}
 	defer session.Close()
-	session.Stdout = &b
-	if err = session.Run(cmd); err != nil {
+	//session.Stdout = &b
+	var b []byte
+	if b, err = session.CombinedOutput(cmd); err != nil {
 		c.err = fmt.Errorf("Error executing %s : %v", cmd, err)
 		return ""
 	}
-	return b.String()
+	//return b.String()
+	return string(b)
 }
 
 // GetError returns the error
