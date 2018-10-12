@@ -42,6 +42,16 @@ func (c *EasySSH) ExecCmd(cmd string) string {
 		return ""
 	}
 	defer session.Close()
+	modes := ssh.TerminalModes{
+		ssh.ECHO:          0,     // doen't make any difference?
+		ssh.TTY_OP_ISPEED: 14400, // input speed = 14.4kbaud
+		ssh.TTY_OP_OSPEED: 14400, // output speed = 14.4kbaud
+	}
+
+	if err := session.RequestPty("xterm", 80, 40, modes); err != nil {
+		c.err = fmt.Errorf("request for pseudo terminal failed: %v", err)
+		return ""
+	}
 	//session.Stdout = &b
 	var b []byte
 	if b, err = session.CombinedOutput(cmd); err != nil {
