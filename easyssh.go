@@ -1,4 +1,4 @@
-package EasySSH
+package easyssh
 
 import (
 	//	"bytes"
