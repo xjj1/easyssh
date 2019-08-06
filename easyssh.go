@@ -3,6 +3,7 @@ package easyssh
 import (
 	//	"bytes"
 	"fmt"
+	"strings"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -22,7 +23,10 @@ func NewSSH(Name, Username, Password string) (*EasySSH, error) {
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
-	client, err := ssh.Dial("tcp", Name+":22", config)
+	if !strings.Contains(Name, ":") {
+		Name = Name + ":22"
+	}
+	client, err := ssh.Dial("tcp", Name, config)
 	if err != nil {
 		return nil, err
 	}
