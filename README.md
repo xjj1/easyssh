@@ -1,4 +1,6 @@
 # easyssh
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fxjj1%2Feasyssh.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fxjj1%2Feasyssh?ref=badge_shield)
+
 
 wrapper for easy use of ssh :
 
@@ -30,3 +32,7 @@ func main() {
 
 
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fxjj1%2Feasyssh.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fxjj1%2Feasyssh?ref=badge_large)
